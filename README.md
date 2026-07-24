@@ -2,7 +2,7 @@
 
 Multi-currency converter. Type once, every currency converts at the same time. Built-in calculator keypad.
 
-**Live:** _(GitHub Pages URL goes here after deploy)_
+**Live:** https://aayaan911.github.io/rateboard/
 
 ## Features
 
