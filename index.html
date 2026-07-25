@@ -475,12 +475,15 @@ function convert(v, from, to){
   if(!rates[from] || !rates[to]) return null;
   return v / rates[from] * rates[to];
 }
+/* Whole numbers by default. Decimals only appear when dropping them would
+   destroy the value (small amounts and sub-unit rates). */
 function fmt(v){
   if(v===null || !isFinite(v)) return "-";
   if(v===0) return "0";
   var a = Math.abs(v);
-  var d = a >= 1 ? 2 : (a >= 0.01 ? 4 : 6);
-  return v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:d});
+  if(a >= 10) return v.toLocaleString("en-US",{maximumFractionDigits:0});
+  if(a >= 0.01) return v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+  return v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:6});
 }
 
 /* ---------- feedback helpers ---------- */
@@ -563,7 +566,8 @@ rowsEl.addEventListener("click", function(e){
     var v = evalExpr(expr);
     var nv = convert(v, list[active], list[i]);
     active = i;
-    expr = (nv===null||nv===0) ? "" : String(Math.round(nv*100)/100);
+    expr = (nv===null||nv===0) ? "" :
+           String(Math.abs(nv) >= 10 ? Math.round(nv) : Math.round(nv*100)/100);
     freshBase = true;
     render();
   }
@@ -924,7 +928,7 @@ document.getElementById("histList").addEventListener("click", function(e){
   if(!h) return;
   if(list.indexOf(h.c) < 0){ list.push(h.c); save(); built = ""; }
   active = list.indexOf(h.c);
-  expr = String(h.a);
+  expr = String(Math.abs(h.a) >= 10 ? Math.round(h.a) : Math.round(h.a*100)/100);
   freshBase = true;
   hSheet.classList.remove("on");
   render(); buzz(12);
