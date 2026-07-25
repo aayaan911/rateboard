@@ -3,7 +3,7 @@
    which is what Safari's aggressive caching was defeating.
    Rates and flags are network-first with a cache fallback.
    Everything else is cache-first. */
-var CACHE = "rateboard-v14";
+var CACHE = "rateboard-v15";
 
 self.addEventListener("install", function(e){
   e.waitUntil(
@@ -57,7 +57,8 @@ self.addEventListener("fetch", function(e){
 
   if(req.url.indexOf("er-api.com") > -1 ||
      req.url.indexOf("currency-api") > -1 ||
-     req.url.indexOf("flagcdn.com") > -1){
+     req.url.indexOf("flagcdn.com") > -1 &&
+     req.url.indexOf("circle-flags") < 0){
     e.respondWith(netFirst(req, false));
     return;
   }

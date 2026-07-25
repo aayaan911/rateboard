@@ -83,7 +83,7 @@ header{
 }
 .cur .fl{
   width:clamp(18px,min(6.8vw,3.4vh),28px);height:clamp(18px,min(6.8vw,3.4vh),28px);
-  border-radius:50%;flex:0 0 auto;aspect-ratio:1;object-fit:cover;background:#3a3a3a;display:block
+  border-radius:50%;flex:0 0 auto;aspect-ratio:1;object-fit:contain;background:transparent;display:block
 }
 .cur .fle{font-size:clamp(15px,min(5.6vw,2.9vh),22px);line-height:1;flex:0 0 auto;text-align:center}
 .cur .cd{font-size:clamp(11px,min(4.3vw,2.2vh),18px);font-weight:600;letter-spacing:.3px}
@@ -210,7 +210,7 @@ body.edit .row .sp{display:flex}
 .list{overflow-y:auto;padding:0 8px 20px}
 .item{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;cursor:pointer}
 .item:active{background:#242424}
-.item .fl{width:26px;height:26px;border-radius:50%;object-fit:cover;flex:0 0 26px;background:#3a3a3a}
+.item .fl{width:26px;height:26px;border-radius:50%;object-fit:contain;flex:0 0 26px;background:transparent}
 .item .fle{font-size:21px;width:26px;flex:0 0 26px;text-align:center}
 .item .cd{font-weight:600;width:52px}
 .item .nm{color:var(--mut);font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -291,7 +291,7 @@ body.dragging{user-select:none}
 .hitem .ht{margin-left:auto;color:#666;font-size:11.5px;text-align:right;white-space:nowrap}
 .empty{padding:26px 18px;text-align:center;color:#6f6f6f;font-size:13px;line-height:1.7}
 .ritem{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px}
-.ritem .fl{width:26px;height:26px;border-radius:50%;object-fit:cover;flex:0 0 26px;background:#3a3a3a}
+.ritem .fl{width:26px;height:26px;border-radius:50%;object-fit:contain;flex:0 0 26px;background:transparent}
 .ritem .fle{font-size:21px;width:26px;flex:0 0 26px;text-align:center}
 .ritem .rc{font-weight:700;width:50px;flex:0 0 50px;font-size:14px;letter-spacing:.3px}
 .ritem .rr{flex:1;min-width:0}
@@ -443,7 +443,7 @@ var BUNDLED = {AED:3.6725,AFN:65.9652,ALL:82.2154,AMD:366.1977,ANG:1.79,AOA:925.
 
 var NAMES = {USD:"US Dollar",EUR:"Euro",GBP:"British Pound",AED:"UAE Dirham",SAR:"Saudi Riyal",QAR:"Qatari Riyal",KWD:"Kuwaiti Dinar",BHD:"Bahraini Dinar",OMR:"Omani Rial",JOD:"Jordanian Dinar",BDT:"Bangladeshi Taka",PKR:"Pakistani Rupee",INR:"Indian Rupee",LKR:"Sri Lankan Rupee",NPR:"Nepalese Rupee",BTN:"Bhutanese Ngultrum",MVR:"Maldivian Rufiyaa",AFN:"Afghan Afghani",IDR:"Indonesian Rupiah",MYR:"Malaysian Ringgit",SGD:"Singapore Dollar",THB:"Thai Baht",PHP:"Philippine Peso",VND:"Vietnamese Dong",KHR:"Cambodian Riel",LAK:"Lao Kip",MMK:"Myanmar Kyat",BND:"Brunei Dollar",CNY:"Chinese Yuan",JPY:"Japanese Yen",KRW:"South Korean Won",HKD:"Hong Kong Dollar",TWD:"Taiwan Dollar",MNT:"Mongolian Tugrik",AUD:"Australian Dollar",NZD:"New Zealand Dollar",FJD:"Fijian Dollar",PGK:"Papua New Guinean Kina",CAD:"Canadian Dollar",MXN:"Mexican Peso",BRL:"Brazilian Real",ARS:"Argentine Peso",CLP:"Chilean Peso",COP:"Colombian Peso",PEN:"Peruvian Sol",CHF:"Swiss Franc",SEK:"Swedish Krona",NOK:"Norwegian Krone",DKK:"Danish Krone",ISK:"Icelandic Krona",PLN:"Polish Zloty",CZK:"Czech Koruna",HUF:"Hungarian Forint",RON:"Romanian Leu",BGN:"Bulgarian Lev",RSD:"Serbian Dinar",UAH:"Ukrainian Hryvnia",RUB:"Russian Ruble",TRY:"Turkish Lira",ILS:"Israeli Shekel",EGP:"Egyptian Pound",MAD:"Moroccan Dirham",DZD:"Algerian Dinar",TND:"Tunisian Dinar",LYD:"Libyan Dinar",IQD:"Iraqi Dinar",IRR:"Iranian Rial",LBP:"Lebanese Pound",SYP:"Syrian Pound",YER:"Yemeni Rial",ZAR:"South African Rand",NGN:"Nigerian Naira",GHS:"Ghanaian Cedi",KES:"Kenyan Shilling",TZS:"Tanzanian Shilling",UGX:"Ugandan Shilling",ETB:"Ethiopian Birr",ZMW:"Zambian Kwacha",MUR:"Mauritian Rupee",BWP:"Botswana Pula",NAD:"Namibian Dollar",MZN:"Mozambican Metical",AOA:"Angolan Kwanza",SDG:"Sudanese Pound",SOS:"Somali Shilling",KZT:"Kazakhstani Tenge",UZS:"Uzbekistani Som",AZN:"Azerbaijani Manat",GEL:"Georgian Lari",AMD:"Armenian Dram",KGS:"Kyrgystani Som",TJS:"Tajikistani Somoni",TMT:"Turkmenistani Manat",BYN:"Belarusian Ruble",MDL:"Moldovan Leu",ALL:"Albanian Lek",MKD:"Macedonian Denar",BAM:"Bosnia Mark",JMD:"Jamaican Dollar",TTD:"Trinidad Dollar",DOP:"Dominican Peso",CUP:"Cuban Peso",GTQ:"Guatemalan Quetzal",HNL:"Honduran Lempira",CRC:"Costa Rican Colon",PAB:"Panamanian Balboa",UYU:"Uruguayan Peso",PYG:"Paraguayan Guarani",BOB:"Bolivian Boliviano",VES:"Venezuelan Bolivar"};
 
-var FLAGX = {EUR:"EU",XAF:null,XOF:null,XCD:null,XDR:null,XPF:null,ANG:null,CHF:"CH",GBP:"GB",DKK:"DK",NOK:"NO",SEK:"SE",CZK:"CZ",EGP:"EG"};
+var FLAGX = {EUR:"EU",XAF:null,XOF:null,XCD:null,XCG:null,XDR:null,XPF:null,ANG:null,CHF:"CH",GBP:"GB",DKK:"DK",NOK:"NO",SEK:"SE",CZK:"CZ",EGP:"EG"};
 
 /* Symbols: Intl gives most of them. These are the ones it renders as a bare code. */
 var SYM = {BDT:"৳",PKR:"₨",IDR:"Rp",AED:"د.إ",SAR:"﷼",QAR:"ر.ق",OMR:"ر.ع",KWD:"د.ك",BHD:".د.ب",JOD:"د.ا",IQD:"ع.د",LYD:"ل.د",DZD:"د.ج",TND:"د.ت",MAD:"د.م.",EGP:"E£",LBP:"ل.ل",SYP:"£S",YER:"﷼",AFN:"؋",IRR:"﷼",
@@ -476,12 +476,15 @@ function emojiFlag(code){
   if(!cc) return "💱";
   return String.fromCodePoint(0x1F1E6 + (cc.charCodeAt(0)-65)) + String.fromCodePoint(0x1F1E6 + (cc.charCodeAt(1)-65));
 }
-/* circular flag: raster flag cropped to a circle, emoji fallback if the CDN is unreachable */
+/* Purpose-drawn circular SVG flags (circle-flags via jsDelivr). Identical on every
+   browser and OS, and nothing is cropped: the old approach cut a rectangular PNG
+   into a circle, which sliced the red band off the UAE flag. Emoji only if the CDN fails. */
 function flag(code){
   var cc = cc2(code);
   if(!cc) return '<span class="fle">' + emojiFlag(code) + '</span>';
-  return '<img class="fl" alt="" loading="lazy" src="https://flagcdn.com/w80/' + cc.toLowerCase() +
-         '.png" onerror="this.outerHTML=&quot;<span class=\'fle\'>' + emojiFlag(code) + '</span>&quot;">';
+  return '<img class="fl" alt="" loading="lazy" src="https://cdn.jsdelivr.net/npm/circle-flags@latest/flags/' +
+         cc.toLowerCase() + '.svg" onerror="this.outerHTML=&quot;<span class=\'fle\'>' +
+         emojiFlag(code) + '</span>&quot;">';
 }
 function nameOf(c){ return NAMES[c] || c; }
 
