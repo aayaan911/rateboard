@@ -439,7 +439,7 @@ var APIS = [
   "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json",
   "https://latest.currency-api.pages.dev/v1/currencies/usd.json"
 ];
-var DEFAULTS = ["USD","AED","IDR","BDT","PKR","PHP"];
+var DEFAULTS = ["USD","AED","BDT","PKR","IDR","PHP"];
 
 /* Rates bundled with the file so the app never shows blanks, even with no network on first open. */
 var BUNDLED_DATE = "24 July";
@@ -505,6 +505,14 @@ if(!Array.isArray(list) || !list.length) list = DEFAULTS.slice();
 if(!ls("rb_mig_php")){
   if(list.indexOf("PHP") < 0) list.push("PHP");
   ls("rb_mig_php","1");
+  ls("rb_list", JSON.stringify(list));
+}
+/* one-time: adopt the default running order for anyone still on the old one */
+if(!ls("rb_mig_order")){
+  var same = list.length === DEFAULTS.length &&
+             DEFAULTS.every(function(c){ return list.indexOf(c) >= 0; });
+  if(same) list = DEFAULTS.slice();
+  ls("rb_mig_order","1");
   ls("rb_list", JSON.stringify(list));
 }
 try{
