@@ -439,7 +439,7 @@ var APIS = [
   "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json",
   "https://latest.currency-api.pages.dev/v1/currencies/usd.json"
 ];
-var DEFAULTS = ["USD","AED","BDT","PKR","IDR","PHP"];
+var DEFAULTS = ["USD","AED","BDT","PKR","IDR"];
 
 /* Rates bundled with the file so the app never shows blanks, even with no network on first open. */
 var BUNDLED_DATE = "24 July";
@@ -501,18 +501,20 @@ function ls(k,v){
 var rates = BUNDLED, rateDate = BUNDLED_DATE, live = false, list, active = 0, expr = "";
 try{ list = JSON.parse(ls("rb_list")||"null"); }catch(e){ list = null; }
 if(!Array.isArray(list) || !list.length) list = DEFAULTS.slice();
-/* one-time: make sure PHP is present for people who saved a list before it was a default */
-if(!ls("rb_mig_php")){
-  if(list.indexOf("PHP") < 0) list.push("PHP");
-  ls("rb_mig_php","1");
-  ls("rb_list", JSON.stringify(list));
-}
-/* one-time: adopt the default running order for anyone still on the old one */
-if(!ls("rb_mig_order")){
-  var same = list.length === DEFAULTS.length &&
-             DEFAULTS.every(function(c){ return list.indexOf(c) >= 0; });
-  if(same) list = DEFAULTS.slice();
-  ls("rb_mig_order","1");
+/* One-time: adopt the current default set and order, but only for people whose
+   saved list is still one of the untouched earlier defaults. Anyone who has
+   customised their list keeps it exactly as they left it. */
+if(!ls("rb_mig_set")){
+  var PREV = [
+    ["USD","AED","IDR","BDT","PKR"],
+    ["USD","AED","IDR","BDT","PKR","PHP"],
+    ["USD","AED","BDT","PKR","IDR","PHP"]
+  ];
+  var untouched = PREV.some(function(set){
+    return set.length === list.length && set.every(function(c){ return list.indexOf(c) >= 0; });
+  });
+  if(untouched) list = DEFAULTS.slice();
+  ls("rb_mig_set","1");
   ls("rb_list", JSON.stringify(list));
 }
 try{
