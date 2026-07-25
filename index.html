@@ -34,7 +34,13 @@ header{
   display:flex;align-items:center;justify-content:space-between;gap:8px;flex:0 0 auto;
   padding:clamp(5px,1.3vh,12px) var(--pad-x) clamp(3px,.9vh,8px)
 }
-.brand{display:flex;align-items:center;gap:9px;min-width:0;flex:1 1 auto;overflow:hidden}
+.brand{
+  display:flex;align-items:center;gap:9px;min-width:0;flex:1 1 auto;overflow:hidden;
+  text-decoration:none;color:inherit;cursor:pointer;
+  transition:opacity .15s ease,transform .12s cubic-bezier(.3,1.4,.5,1);
+  transform-origin:left center
+}
+.brand:active{transform:scale(.97);opacity:.75}
 .brand .txt{min-width:0;overflow:hidden}
 .mark{
   width:clamp(24px,min(8vw,4.2vh),34px);height:clamp(24px,min(8vw,4.2vh),34px);
@@ -275,7 +281,7 @@ body.dragging{user-select:none}
 <body>
 <div class="wrap">
   <header>
-    <div class="brand">
+    <a class="brand" href="./" aria-label="RateBoard home, reload">
       <div class="mark" aria-hidden="true">
         <svg viewBox="0 0 40 40">
           <defs>
@@ -293,8 +299,8 @@ body.dragging{user-select:none}
       <div class="txt">
         <h1><span>Rate</span><b>Board</b></h1>
         <small><span id="status">Loading rates...</span></small>
-            </div>
-    </div>
+      </div>
+    </a>
     <div class="right">
     <div class="tools">
       <button id="btnRefresh" title="Refresh rates" aria-label="Refresh rates">
