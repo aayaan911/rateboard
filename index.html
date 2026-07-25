@@ -117,11 +117,6 @@ body.edit .row .del{display:flex}
 }
 body.edit .addbtn{display:block}
 
-.resetwrap{
-  display:flex;justify-content:center;align-items:center;
-  padding:clamp(2px,.6vh,4px) var(--pad-x) clamp(3px,.8vh,6px);flex:0 0 auto
-}
-.pills{display:flex;justify-content:center;gap:clamp(6px,2vw,10px)}
 .credit-line{
   font-size:clamp(7.5px,min(2.5vw,1.25vh),9.5px);color:#4f4f4f;letter-spacing:.9px;
   text-transform:uppercase;white-space:nowrap;line-height:1;margin-top:3px;
@@ -143,28 +138,6 @@ body.edit .row .sp{display:flex}
   font-size:10px;font-weight:600;color:#6fcf8b;background:#17251a;border:1px solid #2f5138;
   border-radius:6px;padding:2px 5px;margin-right:auto;margin-left:6px;letter-spacing:.3px
 }
-.reset{
-  display:inline-flex;align-items:center;gap:clamp(5px,1.8vw,8px);
-  padding:clamp(5px,1.1vh,9px) clamp(12px,4.4vw,20px) clamp(5px,1.1vh,9px) clamp(10px,3.6vw,16px);
-  border-radius:999px;
-  background:#1c1a15;border:1px solid #40381f;color:#c9a24c;
-  font-size:clamp(10px,min(3.4vw,1.7vh),13px);font-weight:600;
-  letter-spacing:.5px;text-transform:uppercase;cursor:pointer;
-  transition:transform .12s cubic-bezier(.3,1.5,.5,1),background .18s ease,border-color .18s ease,box-shadow .2s ease
-}
-.reset svg{
-  width:clamp(12px,min(4.4vw,2.2vh),17px);height:clamp(12px,min(4.4vw,2.2vh),17px);
-  fill:none;stroke:currentColor;stroke-width:2.2;
-  stroke-linecap:round;stroke-linejoin:round;display:block;transition:transform .2s ease
-}
-.reset:hover{background:#241f16;border-color:#5a4a24}
-.reset:active{transform:scale(.93)}
-.reset.go{
-  background:#2f2716;border-color:var(--acc);color:var(--acc);
-  box-shadow:0 0 0 6px rgba(255,160,0,.09)
-}
-.reset.go svg{animation:spin360 .55s cubic-bezier(.35,.9,.25,1)}
-@keyframes spin360{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
 
 /* keypad ripple */
 .pad button{position:relative;overflow:hidden}
@@ -328,7 +301,7 @@ body.dragging{user-select:none}
         <h1><span>Rate</span><b>Board</b></h1>
         <small><span id="status">Loading rates...</span></small>
         <div class="credit-line"><span class="lng">Developed </span>by <b>Ayaan Shohan</b></div>
-      </div>
+            </div>
     </div>
     <div class="right">
     <div class="tools">
@@ -349,18 +322,6 @@ body.dragging{user-select:none}
   </header>
 
   <div class="rows" id="rows"></div>
-
-  <div class="resetwrap">
-    <div class="pills">
-    <button class="reset" id="btnReset" aria-label="Reset all amounts to zero">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M20.5 12a8.5 8.5 0 1 1-2.49-6.01"/>
-        <polyline points="20.6 3.6 20.6 9.2 15 9.2"/>
-      </svg>
-      <span>Reset</span>
-    </button>
-    </div>
-  </div>
 
   <div class="toast" id="toast"></div>
   <button class="addbtn" id="btnAdd" style="width:calc(100% - 24px);margin-left:12px">+ Add currency</button>
@@ -734,7 +695,7 @@ document.querySelector(".pad").addEventListener("click", function(e){
 function press(k){
   if(freshBase && (/^[0-9.]$/.test(k))){ expr = ""; }
   freshBase = false;
-  if(k==="C"){ expr=""; }
+  if(k==="C"){ expr=""; freshBase=false; prev=[]; buzz(18); }
   else if(k==="back"){ expr = expr.slice(0,-1); }
   else if(k==="="){ expr = String(evalExpr(expr)); pushHistory(); }
   else if(k==="%"){
@@ -824,20 +785,6 @@ listEl.addEventListener("click", function(e){
     list[pickTarget] = c;
   }
   save(); closePicker(); render();
-});
-
-/* Reset: every amount back to zero, base and currency order untouched */
-var resetBtn = document.getElementById("btnReset");
-resetBtn.addEventListener("click", function(){
-  buzz(22);
-  resetBtn.classList.remove("go");
-  void resetBtn.offsetWidth;
-  resetBtn.classList.add("go");
-  setTimeout(function(){ resetBtn.classList.remove("go"); }, 560);
-  expr = "";
-  freshBase = false;
-  prev = [];                 // force every row to replay its animation
-  render();
 });
 
 /* A spread applies as soon as one is entered for a currency. Leave it at 0
