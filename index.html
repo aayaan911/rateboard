@@ -447,7 +447,7 @@ var BUNDLED = {AED:3.6725,AFN:65.9652,ALL:82.2154,AMD:366.1977,ANG:1.79,AOA:925.
 
 var NAMES = {USD:"US Dollar",EUR:"Euro",GBP:"British Pound",AED:"UAE Dirham",SAR:"Saudi Riyal",QAR:"Qatari Riyal",KWD:"Kuwaiti Dinar",BHD:"Bahraini Dinar",OMR:"Omani Rial",JOD:"Jordanian Dinar",BDT:"Bangladeshi Taka",PKR:"Pakistani Rupee",INR:"Indian Rupee",LKR:"Sri Lankan Rupee",NPR:"Nepalese Rupee",BTN:"Bhutanese Ngultrum",MVR:"Maldivian Rufiyaa",AFN:"Afghan Afghani",IDR:"Indonesian Rupiah",MYR:"Malaysian Ringgit",SGD:"Singapore Dollar",THB:"Thai Baht",PHP:"Philippine Peso",VND:"Vietnamese Dong",KHR:"Cambodian Riel",LAK:"Lao Kip",MMK:"Myanmar Kyat",BND:"Brunei Dollar",CNY:"Chinese Yuan",JPY:"Japanese Yen",KRW:"South Korean Won",HKD:"Hong Kong Dollar",TWD:"Taiwan Dollar",MNT:"Mongolian Tugrik",AUD:"Australian Dollar",NZD:"New Zealand Dollar",FJD:"Fijian Dollar",PGK:"Papua New Guinean Kina",CAD:"Canadian Dollar",MXN:"Mexican Peso",BRL:"Brazilian Real",ARS:"Argentine Peso",CLP:"Chilean Peso",COP:"Colombian Peso",PEN:"Peruvian Sol",CHF:"Swiss Franc",SEK:"Swedish Krona",NOK:"Norwegian Krone",DKK:"Danish Krone",ISK:"Icelandic Krona",PLN:"Polish Zloty",CZK:"Czech Koruna",HUF:"Hungarian Forint",RON:"Romanian Leu",BGN:"Bulgarian Lev",RSD:"Serbian Dinar",UAH:"Ukrainian Hryvnia",RUB:"Russian Ruble",TRY:"Turkish Lira",ILS:"Israeli Shekel",EGP:"Egyptian Pound",MAD:"Moroccan Dirham",DZD:"Algerian Dinar",TND:"Tunisian Dinar",LYD:"Libyan Dinar",IQD:"Iraqi Dinar",IRR:"Iranian Rial",LBP:"Lebanese Pound",SYP:"Syrian Pound",YER:"Yemeni Rial",ZAR:"South African Rand",NGN:"Nigerian Naira",GHS:"Ghanaian Cedi",KES:"Kenyan Shilling",TZS:"Tanzanian Shilling",UGX:"Ugandan Shilling",ETB:"Ethiopian Birr",ZMW:"Zambian Kwacha",MUR:"Mauritian Rupee",BWP:"Botswana Pula",NAD:"Namibian Dollar",MZN:"Mozambican Metical",AOA:"Angolan Kwanza",SDG:"Sudanese Pound",SOS:"Somali Shilling",KZT:"Kazakhstani Tenge",UZS:"Uzbekistani Som",AZN:"Azerbaijani Manat",GEL:"Georgian Lari",AMD:"Armenian Dram",KGS:"Kyrgystani Som",TJS:"Tajikistani Somoni",TMT:"Turkmenistani Manat",BYN:"Belarusian Ruble",MDL:"Moldovan Leu",ALL:"Albanian Lek",MKD:"Macedonian Denar",BAM:"Bosnia Mark",JMD:"Jamaican Dollar",TTD:"Trinidad Dollar",DOP:"Dominican Peso",CUP:"Cuban Peso",GTQ:"Guatemalan Quetzal",HNL:"Honduran Lempira",CRC:"Costa Rican Colon",PAB:"Panamanian Balboa",UYU:"Uruguayan Peso",PYG:"Paraguayan Guarani",BOB:"Bolivian Boliviano",VES:"Venezuelan Bolivar"};
 
-var FLAGX = {EUR:"EU",XAF:null,XOF:null,XCD:null,XCG:null,XDR:null,XPF:null,ANG:null,CHF:"CH",GBP:"GB",DKK:"DK",NOK:"NO",SEK:"SE",CZK:"CZ",EGP:"EG"};
+var FLAGX = {EUR:"EU",XAF:null,XOF:null,XCD:null,XCG:"CW",ANG:"CW",XDR:null,XPF:null,CHF:"CH",GBP:"GB",DKK:"DK",NOK:"NO",SEK:"SE",CZK:"CZ",EGP:"EG"};
 
 /* Symbols: Intl gives most of them. These are the ones it renders as a bare code. */
 var SYM = {BDT:"৳",PKR:"₨",IDR:"Rp",AED:"د.إ",SAR:"﷼",QAR:"ر.ق",OMR:"ر.ع",KWD:"د.ك",BHD:".د.ب",JOD:"د.ا",IQD:"ع.د",LYD:"ل.د",DZD:"د.ج",TND:"د.ت",MAD:"د.م.",EGP:"E£",LBP:"ل.ل",SYP:"£S",YER:"﷼",AFN:"؋",IRR:"﷼",
@@ -484,10 +484,11 @@ function emojiFlag(code){
    they render identically on every device, load instantly, and keep working offline. */
 function flag(code){
   var cc = cc2(code);
-  if(!cc) return '<span class="fle">' + emojiFlag(code) + '</span>';
-  return '<img class="fl" alt="" loading="lazy" src="flags/' + cc.toLowerCase() +
-         '.svg" onerror="this.outerHTML=&quot;<span class=\'fle\'>' +
-         emojiFlag(code) + '</span>&quot;">';
+  var file = cc ? cc.toLowerCase() : "_generic";
+  /* the fallback is a repo file too, never an emoji: emoji are drawn differently
+     by Apple, Google and Samsung, which is what made flags look inconsistent */
+  return '<img class="fl" alt="" loading="lazy" src="flags/' + file +
+         '.svg" onerror="this.onerror=null;this.src=\'flags/_generic.svg\'">';
 }
 function nameOf(c){ return NAMES[c] || c; }
 
