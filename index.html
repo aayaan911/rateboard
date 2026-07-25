@@ -15,7 +15,7 @@
   --bg:#0a0a0a; --row:#2b2b2b; --row2:#232323; --chip:#252525; --chip-b:#3a3a3a;
   --active:#3d3320; --active-b:#ffb020; --txt:#f2f2f2; --mut:#8a8a8a;
   --key:#2e2e2e; --key-l:#b8b8b8; --acc:#ffa000; --ok:#3ddc84;
-  --rowh:clamp(50px,7.6vh,66px); --keyh:clamp(44px,7.2vh,64px); --gap:clamp(6px,1.2vh,11px);
+  --rowh:clamp(48px,7vh,60px); --keyh:clamp(42px,6.7vh,60px); --gap:clamp(6px,1.1vh,9px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 html,body{height:100%}
@@ -97,6 +97,35 @@ body.edit .row .del{display:flex}
   color:var(--acc);font-size:15px;cursor:pointer;display:none;width:100%
 }
 body.edit .addbtn{display:block}
+
+.resetwrap{display:flex;justify-content:center;padding:4px 0 6px;flex:0 0 auto}
+.reset{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 20px 9px 16px;border-radius:999px;
+  background:#1c1a15;border:1px solid #40381f;color:#c9a24c;font-size:13px;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;cursor:pointer;
+  transition:transform .12s cubic-bezier(.3,1.5,.5,1),background .18s ease,border-color .18s ease,box-shadow .2s ease
+}
+.reset svg{
+  width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round;display:block;transition:transform .2s ease
+}
+.reset:hover{background:#241f16;border-color:#5a4a24}
+.reset:active{transform:scale(.93)}
+.reset.go{
+  background:#2f2716;border-color:var(--acc);color:var(--acc);
+  box-shadow:0 0 0 6px rgba(255,160,0,.09)
+}
+.reset.go svg{animation:spin360 .55s cubic-bezier(.35,.9,.25,1)}
+@keyframes spin360{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+
+/* keypad ripple */
+.pad button{position:relative;overflow:hidden}
+.rip{
+  position:absolute;border-radius:50%;transform:translate(-50%,-50%) scale(0);
+  background:rgba(255,255,255,.28);pointer-events:none;animation:rip .45s ease-out forwards
+}
+.pad .lt .rip{background:rgba(0,0,0,.18)}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
 
 .pad{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);padding:6px 12px calc(10px + env(safe-area-inset-bottom))}
 .pad button{
@@ -264,6 +293,17 @@ body.dragging{user-select:none}
   </header>
 
   <div class="rows" id="rows"></div>
+
+  <div class="resetwrap">
+    <button class="reset" id="btnReset" aria-label="Reset all amounts to zero">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.5 12a8.5 8.5 0 1 1-2.49-6.01"/>
+        <polyline points="20.6 3.6 20.6 9.2 15 9.2"/>
+      </svg>
+      <span>Reset</span>
+    </button>
+  </div>
+
   <div class="toast" id="toast"></div>
   <button class="addbtn" id="btnAdd" style="width:calc(100% - 24px);margin-left:12px">+ Add currency</button>
 
@@ -539,7 +579,7 @@ function render(){
       v.textContent = shown;
       var n = shown.length;
       v.className = "v" + (n > 20 ? " l3" : n > 16 ? " l2" : n > 12 ? " l1" : "");
-      if(!on && prev[i] !== undefined){
+      if(!on){
         void v.offsetWidth;
         v.classList.add("bump");
       }
@@ -701,6 +741,34 @@ listEl.addEventListener("click", function(e){
     list[pickTarget] = c;
   }
   save(); closePicker(); render();
+});
+
+/* Reset: every amount back to zero, base and currency order untouched */
+var resetBtn = document.getElementById("btnReset");
+resetBtn.addEventListener("click", function(){
+  buzz(22);
+  resetBtn.classList.remove("go");
+  void resetBtn.offsetWidth;
+  resetBtn.classList.add("go");
+  setTimeout(function(){ resetBtn.classList.remove("go"); }, 560);
+  expr = "";
+  freshBase = false;
+  prev = [];                 // force every row to replay its animation
+  render();
+});
+
+/* ripple that follows the finger on every keypad press */
+document.querySelector(".pad").addEventListener("pointerdown", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  var r = b.getBoundingClientRect();
+  var d = Math.max(r.width, r.height) * 2.1;
+  var sp = document.createElement("span");
+  sp.className = "rip";
+  sp.style.width = sp.style.height = d + "px";
+  sp.style.left = (e.clientX - r.left) + "px";
+  sp.style.top = (e.clientY - r.top) + "px";
+  b.appendChild(sp);
+  setTimeout(function(){ sp.remove(); }, 460);
 });
 
 document.getElementById("btnAdd").onclick = function(){ openPicker(null); };
