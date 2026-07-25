@@ -127,24 +127,6 @@ body.edit .addbtn{display:block}
   text-transform:uppercase;white-space:nowrap;line-height:1
 }
 .credit-line b{color:#7d7d7d;font-weight:700;letter-spacing:1px}
-.spread{
-  display:inline-flex;align-items:center;gap:clamp(4px,1.6vw,7px);
-  padding:clamp(5px,1.1vh,9px) clamp(10px,3.6vw,16px);border-radius:999px;
-  background:#16181c;border:1px solid #2f3640;color:#8b93a0;
-  font-size:clamp(10px,min(3.4vw,1.7vh),13px);font-weight:600;
-  letter-spacing:.5px;text-transform:uppercase;cursor:pointer;
-  transition:transform .12s cubic-bezier(.3,1.5,.5,1),background .18s ease,border-color .18s ease,color .18s ease,box-shadow .2s ease
-}
-.spread svg{
-  width:clamp(12px,min(4.4vw,2.2vh),17px);height:clamp(12px,min(4.4vw,2.2vh),17px);
-  fill:none;stroke:currentColor;stroke-width:2.2;
-  stroke-linecap:round;stroke-linejoin:round;display:block
-}
-.spread:active{transform:scale(.93)}
-.spread.on{
-  background:#1b2a1e;border-color:#3f6b48;color:#6fcf8b;
-  box-shadow:0 0 0 5px rgba(111,207,139,.07)
-}
 .row .sp{display:none;align-items:center;gap:2px;flex:0 0 clamp(54px,18vw,74px);
   background:#1e1e1e;border:1px solid #383838;border-radius:12px;padding:0 8px;height:auto}
 .row .sp input{
@@ -366,12 +348,6 @@ body.dragging{user-select:none}
 
   <div class="resetwrap">
     <div class="pills">
-    <button class="spread" id="btnSpread" aria-label="Toggle mid-market or after-spread rates">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4 17.5 10 11l4 3.6 6-7.4"/><polyline points="20 12 20 7.2 15.2 7.2"/>
-      </svg>
-      <span id="spreadLbl">Mid</span>
-    </button>
     <button class="reset" id="btnReset" aria-label="Reset all amounts to zero">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M20.5 12a8.5 8.5 0 1 1-2.49-6.01"/>
@@ -535,10 +511,9 @@ try{ expr = ls("rb_expr") || ""; }catch(e){ expr = ""; }
 var savedActive = parseInt(ls("rb_active")||"0",10);
 if(savedActive >= 0 && savedActive < list.length) active = savedActive;
 
-var spreads = {}, spreadOn = false;
+var spreads = {};
 try{ spreads = JSON.parse(ls("rb_spreads")||"{}") || {}; }catch(e){ spreads = {}; }
-spreadOn = ls("rb_spread_on") === "1";
-function saveSpreads(){ ls("rb_spreads", JSON.stringify(spreads)); ls("rb_spread_on", spreadOn ? "1" : "0"); }
+function saveSpreads(){ ls("rb_spreads", JSON.stringify(spreads)); }
 function spreadOf(code){ var v = parseFloat(spreads[code]); return isFinite(v) && v > 0 ? v : 0; }
 
 var recents = [], history = [];
@@ -599,7 +574,7 @@ function evalExpr(s){
 function convert(v, from, to){
   if(!rates[from] || !rates[to]) return null;
   var out = v / rates[from] * rates[to];
-  if(spreadOn && to !== from) out = out * (1 - spreadOf(to) / 100);
+  if(to !== from) out = out * (1 - spreadOf(to) / 100);
   return out;
 }
 /* Whole numbers by default. Decimals only appear when dropping them would
@@ -666,7 +641,7 @@ function render(){
     var shown = on ? typed() : fmt(convert(val, base, list[i]));
 
     var cut = rows[i].querySelector(".cut");
-    var sp = (spreadOn && !on) ? spreadOf(list[i]) : 0;
+    var sp = on ? 0 : spreadOf(list[i]);
     if(sp > 0 && !cut){
       cut = document.createElement("span");
       cut.className = "cut";
@@ -859,26 +834,8 @@ resetBtn.addEventListener("click", function(){
   render();
 });
 
-/* Mid-market vs after-spread. Mid is the raw rate. Net subtracts the cut
-   each provider takes on that currency, so the number matches what lands. */
-var spreadBtn = document.getElementById("btnSpread"), spreadLbl = document.getElementById("spreadLbl");
-function paintSpread(){
-  spreadBtn.classList.toggle("on", spreadOn);
-  spreadLbl.textContent = spreadOn ? "Net" : "Mid";
-}
-spreadBtn.addEventListener("click", function(){
-  spreadOn = !spreadOn;
-  saveSpreads(); paintSpread(); buzz(18);
-  prev = []; render();
-  if(spreadOn){
-    var any = list.some(function(c){ return spreadOf(c) > 0; });
-    toast(any ? "Showing what you actually receive" : "No spread set yet. Tap the gear and enter your rate per currency");
-  } else {
-    toast("Showing mid-market rates");
-  }
-});
-paintSpread();
-
+/* A spread applies as soon as one is entered for a currency. Leave it at 0
+   and that row stays on the raw mid-market rate. No mode to remember. */
 rowsEl.addEventListener("input", function(e){
   var inp = e.target.closest("[data-sp]"); if(!inp) return;
   var c = inp.getAttribute("data-sp");
@@ -888,6 +845,7 @@ rowsEl.addEventListener("input", function(e){
   spreads[c] = v;
   saveSpreads();
   prev = []; render();
+  if(v > 0) toast(c + " now shows what you actually receive, " + v + "% less");
 });
 rowsEl.addEventListener("click", function(e){ if(e.target.closest(".sp")) e.stopPropagation(); }, true);
 
@@ -948,9 +906,9 @@ document.getElementById("btnRates").onclick = function(){
   });
   document.getElementById("rateList").innerHTML = h;
   document.getElementById("rateNote").innerHTML = creditLine() + "Rates updated " + rateDate + ". These are mid-market rates, refreshed once every 24 hours. " +
-    (spreadOn
-      ? "Net mode is on, so the rows above subtract the spread you entered for each currency."
-      : "Banks and remittance services take a spread on top, so the cash you receive is lower. Switch to Net to see your real amount.");
+    (list.some(function(c){ return spreadOf(c) > 0; })
+      ? "The rows above subtract the spread you set per currency, so they show what actually reaches you."
+      : "Banks and remittance services take a spread on top, so the cash you receive is lower. Set your % per currency under the gear icon to see your real amount.");
   rSheet.classList.add("on");
 };
 
