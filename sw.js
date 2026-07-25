@@ -1,39 +1,76 @@
-/* RateBoard service worker: app shell offline, network-first for rates */
-var CACHE = "rateboard-v12";
-var SHELL = ["./", "./index.html"];
+/* RateBoard service worker.
+   HTML is network-first so a new deploy is picked up on the next load,
+   which is what Safari's aggressive caching was defeating.
+   Rates and flags are network-first with a cache fallback.
+   Everything else is cache-first. */
+var CACHE = "rateboard-v13";
 
 self.addEventListener("install", function(e){
-  e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(SHELL); }).then(function(){ return self.skipWaiting(); }));
+  e.waitUntil(
+    caches.open(CACHE)
+      .then(function(c){ return c.addAll(["./", "./index.html"]); })
+      .catch(function(){})
+      .then(function(){ return self.skipWaiting(); })
+  );
 });
 
 self.addEventListener("activate", function(e){
-  e.waitUntil(caches.keys().then(function(keys){
-    return Promise.all(keys.map(function(k){ if(k!==CACHE) return caches.delete(k); }));
-  }).then(function(){ return self.clients.claim(); }));
+  e.waitUntil(
+    caches.keys()
+      .then(function(keys){
+        return Promise.all(keys.map(function(k){ if(k !== CACHE) return caches.delete(k); }));
+      })
+      .then(function(){ return self.clients.claim(); })
+  );
 });
 
-self.addEventListener("fetch", function(e){
-  var url = e.request.url;
-  if(e.request.method !== "GET") return;
+self.addEventListener("message", function(e){
+  if(e.data === "skip-waiting") self.skipWaiting();
+});
 
-  // rates + flags: network first, fall back to cache
-  if(url.indexOf("er-api.com") > -1 || url.indexOf("flagcdn.com") > -1){
-    e.respondWith(
-      fetch(e.request).then(function(r){
+function netFirst(req, bustCache){
+  var opts = bustCache ? {cache: "no-store"} : undefined;
+  return fetch(new Request(req.url, opts ? {cache: "no-store"} : {}))
+    .then(function(r){
+      if(r && r.ok){
         var copy = r.clone();
-        caches.open(CACHE).then(function(c){ c.put(e.request, copy); });
-        return r;
-      }).catch(function(){ return caches.match(e.request); })
-    );
+        caches.open(CACHE).then(function(c){ c.put(req, copy); });
+      }
+      return r;
+    })
+    .catch(function(){
+      return caches.match(req).then(function(hit){
+        return hit || caches.match("./index.html");
+      });
+    });
+}
+
+self.addEventListener("fetch", function(e){
+  var req = e.request;
+  if(req.method !== "GET") return;
+
+  var isHTML = req.mode === "navigate" ||
+               (req.headers.get("accept") || "").indexOf("text/html") > -1 ||
+               /\.html($|\?)/.test(req.url);
+
+  if(isHTML){ e.respondWith(netFirst(req, true)); return; }
+
+  if(req.url.indexOf("er-api.com") > -1 ||
+     req.url.indexOf("currency-api") > -1 ||
+     req.url.indexOf("flagcdn.com") > -1){
+    e.respondWith(netFirst(req, false));
     return;
   }
 
-  // app shell: cache first
-  e.respondWith(caches.match(e.request).then(function(hit){
-    return hit || fetch(e.request).then(function(r){
-      var copy = r.clone();
-      caches.open(CACHE).then(function(c){ c.put(e.request, copy); });
-      return r;
-    });
-  }));
+  e.respondWith(
+    caches.match(req).then(function(hit){
+      return hit || fetch(req).then(function(r){
+        if(r && r.ok){
+          var copy = r.clone();
+          caches.open(CACHE).then(function(c){ c.put(req, copy); });
+        }
+        return r;
+      });
+    })
+  );
 });
