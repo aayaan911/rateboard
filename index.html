@@ -117,14 +117,6 @@ body.edit .row .del{display:flex}
 }
 body.edit .addbtn{display:block}
 
-.credit-line{
-  font-size:clamp(7.5px,min(2.5vw,1.25vh),9.5px);color:#4f4f4f;letter-spacing:.9px;
-  text-transform:uppercase;white-space:nowrap;line-height:1;margin-top:3px;
-  overflow:hidden;text-overflow:ellipsis
-}
-.credit-line b{color:#7a7a7a;font-weight:700;letter-spacing:.9px}
-/* narrow phones lose the word "Developed" rather than truncating the name */
-@media (max-width:389px){ .credit-line .lng{display:none} }
 .row .sp{display:none;align-items:center;gap:2px;flex:0 0 clamp(54px,18vw,74px);
   background:#1e1e1e;border:1px solid #383838;border-radius:12px;padding:0 8px;height:auto}
 .row .sp input{
@@ -300,7 +292,6 @@ body.dragging{user-select:none}
       <div class="txt">
         <h1><span>Rate</span><b>Board</b></h1>
         <small><span id="status">Loading rates...</span></small>
-        <div class="credit-line"><span class="lng">Developed </span>by <b>Ayaan Shohan</b></div>
             </div>
     </div>
     <div class="right">
