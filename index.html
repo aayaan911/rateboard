@@ -15,31 +15,40 @@
   --bg:#0a0a0a; --row:#2b2b2b; --row2:#232323; --chip:#252525; --chip-b:#3a3a3a;
   --active:#3d3320; --active-b:#ffb020; --txt:#f2f2f2; --mut:#8a8a8a;
   --key:#2e2e2e; --key-l:#b8b8b8; --acc:#ffa000; --ok:#3ddc84;
-  --rowh:clamp(48px,7vh,60px); --keyh:clamp(42px,6.7vh,60px); --gap:clamp(6px,1.1vh,9px);
+  --rowh:clamp(28px,min(6.9vh,13vw),60px);
+  --keyh:clamp(26px,min(6.4vh,13.5vw),58px);
+  --gap:clamp(4px,min(1vh,2vw),9px);
+  --pad-x:clamp(6px,2.4vw,14px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{height:100%}
+html,body{height:100%;height:100dvh}
 body{
   background:var(--bg);color:var(--txt);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   display:flex;flex-direction:column;overflow:hidden;
   padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
 }
-.wrap{max-width:520px;width:100%;margin:0 auto;display:flex;flex-direction:column;height:100%}
+.wrap{max-width:520px;width:100%;margin:0 auto;display:flex;flex-direction:column;height:100%;min-height:0}
 
-header{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 8px;gap:8px}
+header{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;flex:0 0 auto;
+  padding:clamp(5px,1.3vh,12px) var(--pad-x) clamp(3px,.9vh,8px)
+}
 .brand{display:flex;align-items:center;gap:9px;min-width:0;flex:1 1 auto;overflow:hidden}
 .brand .txt{min-width:0;overflow:hidden}
-.mark{width:34px;height:34px;flex:0 0 34px;filter:drop-shadow(0 3px 8px rgba(255,160,0,.28))}
-.mark svg{width:100%;height:100%;display:block}
+.mark{
+  width:clamp(24px,min(8vw,4.2vh),34px);height:clamp(24px,min(8vw,4.2vh),34px);
+  flex:0 0 auto;aspect-ratio:1;line-height:0
+}
+.mark svg{width:100%;height:100%;display:block;overflow:visible}
 .brand h1{
-  font-size:clamp(17px,4.7vw,21px);font-weight:700;letter-spacing:-.4px;line-height:1.15;
+  font-size:clamp(13px,min(4.7vw,2.6vh),21px);font-weight:700;letter-spacing:-.4px;line-height:1.15;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .brand h1 span{color:#fff}
 .brand h1 b{color:var(--acc);font-weight:700}
 .brand small{
-  display:flex;align-items:center;gap:6px;font-size:11.5px;color:#c9a24c;
+  display:flex;align-items:center;gap:5px;font-size:clamp(9px,min(3vw,1.5vh),11.5px);color:#c9a24c;
   margin-top:2px;letter-spacing:.1px;font-weight:500
 }
 .brand small::before{
@@ -56,57 +65,107 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 }
 .tools{display:flex;gap:11px;align-items:center;flex:0 0 auto}
 .tools button{background:none;border:0;color:var(--acc);line-height:0;cursor:pointer;padding:3px}
-.tools button svg{width:22px;height:22px;display:block}
+.tools button svg{width:clamp(17px,min(5.6vw,2.8vh),22px);height:clamp(17px,min(5.6vw,2.8vh),22px);display:block}
 .tools button:active{opacity:.5}
 .spin{animation:sp .8s linear infinite;transform-origin:50% 50%}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-.rows{flex:1;overflow-y:auto;padding:2px 12px 8px;display:flex;flex-direction:column;gap:var(--gap);min-height:0}
+.rows{
+  flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
+  padding:2px var(--pad-x) clamp(3px,.8vh,8px);
+  display:flex;flex-direction:column;gap:var(--gap);
+  scrollbar-width:none
+}
+.rows::-webkit-scrollbar{width:0;height:0}
 .row{display:flex;gap:10px;align-items:stretch}
 .cur{
-  flex:0 0 clamp(96px,26vw,128px);background:var(--chip);border:1px solid var(--chip-b);border-radius:16px;
-  display:flex;align-items:center;gap:9px;padding:0 12px;cursor:pointer;
+  flex:0 0 clamp(74px,26vw,128px);background:var(--chip);border:1px solid var(--chip-b);
+  border-radius:clamp(10px,2.4vh,16px);
+  display:flex;align-items:center;gap:clamp(5px,1.8vw,9px);padding:0 clamp(6px,2.6vw,12px);cursor:pointer;
 }
-.cur .fl{width:28px;height:28px;border-radius:50%;flex:0 0 28px;object-fit:cover;background:#3a3a3a;display:block}
-.cur .fle{font-size:22px;line-height:28px;width:28px;text-align:center;flex:0 0 28px}
-.cur .cd{font-size:clamp(15px,4.3vw,18px);font-weight:600;letter-spacing:.3px}
+.cur .fl{
+  width:clamp(18px,min(6.8vw,3.4vh),28px);height:clamp(18px,min(6.8vw,3.4vh),28px);
+  border-radius:50%;flex:0 0 auto;aspect-ratio:1;object-fit:cover;background:#3a3a3a;display:block
+}
+.cur .fle{font-size:clamp(15px,min(5.6vw,2.9vh),22px);line-height:1;flex:0 0 auto;text-align:center}
+.cur .cd{font-size:clamp(11px,min(4.3vw,2.2vh),18px);font-weight:600;letter-spacing:.3px}
 .amt{
-  flex:1;background:var(--row);border:1px solid transparent;border-radius:16px;
-  padding:10px 14px;min-height:var(--rowh);display:flex;flex-direction:row;
-  align-items:center;justify-content:space-between;gap:8px;cursor:pointer;overflow:hidden;
+  flex:1;background:var(--row);border:1px solid transparent;border-radius:clamp(10px,2.4vh,16px);
+  padding:clamp(4px,1.1vh,10px) clamp(8px,3vw,14px);min-height:var(--rowh);
+  display:flex;flex-direction:row;
+  align-items:center;justify-content:space-between;gap:clamp(4px,1.6vw,8px);cursor:pointer;overflow:hidden;
 }
 .amt .sym{
-  font-size:clamp(13px,3.6vw,15px);font-weight:600;color:#8f8f8f;flex:0 0 auto;
-  min-width:22px;text-align:left;line-height:1
+  font-size:clamp(10px,min(3.6vw,1.9vh),15px);font-weight:600;color:#8f8f8f;flex:0 0 auto;
+  min-width:16px;text-align:left;line-height:1
 }
 .amt .v{
-  font-size:clamp(20px,5.6vw,26px);font-weight:400;white-space:nowrap;overflow:hidden;
+  font-size:clamp(14px,min(5.6vw,3vh),26px);font-weight:400;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;text-align:right;flex:1;font-variant-numeric:tabular-nums;
   transition:font-size .12s ease,color .2s ease
 }
-.amt .v.l1{font-size:clamp(18px,4.9vw,23px)}
-.amt .v.l2{font-size:clamp(16px,4.3vw,20px)}
-.amt .v.l3{font-size:clamp(14px,3.7vw,17px)}
+.amt .v.l1{font-size:clamp(13px,min(4.9vw,2.6vh),23px)}
+.amt .v.l2{font-size:clamp(12px,min(4.3vw,2.3vh),20px)}
+.amt .v.l3{font-size:clamp(10px,min(3.7vw,2vh),17px)}
 .row.on .amt{background:var(--active);border-color:var(--active-b)}
 .row.on .amt .v{color:#ffd58a}
 .row.on .amt .sym{color:#e0a94e}
-.row .del{flex:0 0 34px;display:none;align-items:center;justify-content:center;background:#3a2020;border:1px solid #5a2c2c;border-radius:12px;color:#ff7b7b;font-size:18px;cursor:pointer}
+.row .del{flex:0 0 clamp(24px,8vw,34px);display:none;align-items:center;justify-content:center;background:#3a2020;border:1px solid #5a2c2c;border-radius:12px;color:#ff7b7b;font-size:18px;cursor:pointer}
 body.edit .row .del{display:flex}
 .addbtn{
-  margin:2px 0 4px;padding:12px;border-radius:14px;border:1px dashed #4a4a4a;background:none;
-  color:var(--acc);font-size:15px;cursor:pointer;display:none;width:100%
+  margin:2px 0 4px;padding:clamp(6px,1.4vh,12px);border-radius:14px;border:1px dashed #4a4a4a;
+  background:none;color:var(--acc);font-size:clamp(11px,min(3.8vw,1.9vh),15px);
+  cursor:pointer;display:none;width:100%;flex:0 0 auto
 }
 body.edit .addbtn{display:block}
 
-.resetwrap{display:flex;justify-content:center;padding:4px 0 6px;flex:0 0 auto}
+.resetwrap{
+  display:flex;justify-content:center;gap:clamp(6px,2vw,10px);
+  padding:clamp(2px,.6vh,4px) 0 clamp(3px,.8vh,6px);flex:0 0 auto
+}
+.spread{
+  display:inline-flex;align-items:center;gap:clamp(4px,1.6vw,7px);
+  padding:clamp(5px,1.1vh,9px) clamp(10px,3.6vw,16px);border-radius:999px;
+  background:#16181c;border:1px solid #2f3640;color:#8b93a0;
+  font-size:clamp(10px,min(3.4vw,1.7vh),13px);font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;cursor:pointer;
+  transition:transform .12s cubic-bezier(.3,1.5,.5,1),background .18s ease,border-color .18s ease,color .18s ease,box-shadow .2s ease
+}
+.spread svg{
+  width:clamp(12px,min(4.4vw,2.2vh),17px);height:clamp(12px,min(4.4vw,2.2vh),17px);
+  fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round;display:block
+}
+.spread:active{transform:scale(.93)}
+.spread.on{
+  background:#1b2a1e;border-color:#3f6b48;color:#6fcf8b;
+  box-shadow:0 0 0 5px rgba(111,207,139,.07)
+}
+.row .sp{display:none;align-items:center;gap:2px;flex:0 0 clamp(54px,18vw,74px);
+  background:#1e1e1e;border:1px solid #383838;border-radius:12px;padding:0 8px;height:auto}
+.row .sp input{
+  width:100%;background:none;border:0;outline:none;color:var(--acc);font-size:14px;font-weight:600;
+  text-align:right;font-family:inherit;-moz-appearance:textfield
+}
+.row .sp input::-webkit-outer-spin-button,.row .sp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.row .sp i{color:#7a7a7a;font-style:normal;font-size:12px;font-weight:600}
+body.edit .row .sp{display:flex}
+.amt .cut{
+  font-size:10px;font-weight:600;color:#6fcf8b;background:#17251a;border:1px solid #2f5138;
+  border-radius:6px;padding:2px 5px;margin-right:auto;margin-left:6px;letter-spacing:.3px
+}
 .reset{
-  display:inline-flex;align-items:center;gap:8px;padding:9px 20px 9px 16px;border-radius:999px;
-  background:#1c1a15;border:1px solid #40381f;color:#c9a24c;font-size:13px;font-weight:600;
+  display:inline-flex;align-items:center;gap:clamp(5px,1.8vw,8px);
+  padding:clamp(5px,1.1vh,9px) clamp(12px,4.4vw,20px) clamp(5px,1.1vh,9px) clamp(10px,3.6vw,16px);
+  border-radius:999px;
+  background:#1c1a15;border:1px solid #40381f;color:#c9a24c;
+  font-size:clamp(10px,min(3.4vw,1.7vh),13px);font-weight:600;
   letter-spacing:.5px;text-transform:uppercase;cursor:pointer;
   transition:transform .12s cubic-bezier(.3,1.5,.5,1),background .18s ease,border-color .18s ease,box-shadow .2s ease
 }
 .reset svg{
-  width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;
+  width:clamp(12px,min(4.4vw,2.2vh),17px);height:clamp(12px,min(4.4vw,2.2vh),17px);
+  fill:none;stroke:currentColor;stroke-width:2.2;
   stroke-linecap:round;stroke-linejoin:round;display:block;transition:transform .2s ease
 }
 .reset:hover{background:#241f16;border-color:#5a4a24}
@@ -127,10 +186,13 @@ body.edit .addbtn{display:block}
 .pad .lt .rip{background:rgba(0,0,0,.18)}
 @keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
 
-.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);padding:6px 12px calc(10px + env(safe-area-inset-bottom))}
+.pad{
+  display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:var(--keyh);gap:var(--gap);
+  flex:0 0 auto;padding:clamp(3px,.8vh,6px) var(--pad-x) calc(clamp(4px,1vh,10px) + env(safe-area-inset-bottom))
+}
 .pad button{
-  border:0;border-radius:20px;background:var(--key);color:var(--txt);
-  font-size:clamp(20px,5.6vw,25px);font-weight:500;height:var(--keyh);cursor:pointer;
+  border:0;border-radius:clamp(12px,3vh,20px);background:var(--key);color:var(--txt);
+  font-size:clamp(14px,min(5.6vw,3vh),25px);font-weight:500;height:100%;cursor:pointer;
   font-variant-numeric:tabular-nums;letter-spacing:.2px;
   display:flex;align-items:center;justify-content:center
 }
@@ -139,7 +201,7 @@ body.edit .addbtn{display:block}
 .pad .op{background:var(--acc);color:#fff;font-weight:600}
 .pad .z{grid-column:span 2}
 .pad .ic svg{
-  width:clamp(23px,6.4vw,29px);height:clamp(23px,6.4vw,29px);display:block;
+  width:clamp(15px,min(6.4vw,3.4vh),29px);height:clamp(15px,min(6.4vw,3.4vh),29px);display:block;
   fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round
 }
 .pad .lt.ic svg{stroke-width:2.1}
@@ -205,7 +267,7 @@ body.edit .row .del{animation:fade .2s ease backwards}
 /* grip + drag */
 /* always visible so reordering needs no mode switch */
 .row .grip{
-  flex:0 0 30px;display:flex;align-items:center;justify-content:center;background:transparent;
+  flex:0 0 clamp(20px,7vw,30px);display:flex;align-items:center;justify-content:center;background:transparent;
   border:0;border-radius:10px;color:#565656;cursor:grab;touch-action:none;
   transition:color .15s ease,background .15s ease
 }
@@ -262,7 +324,7 @@ body.dragging{user-select:none}
               <stop offset="0" stop-color="#ffc44d"/><stop offset="1" stop-color="#f08a00"/>
             </linearGradient>
           </defs>
-          <rect x="0" y="0" width="40" height="40" rx="11" fill="url(#lg)"/>
+          <rect x="0" y="0" width="40" height="40" rx="12.5" fill="url(#lg)"/>
           <g fill="none" stroke="#191100" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 15.5h16l-4-4"/>
             <path d="M29 24.5H13l4 4"/>
@@ -295,6 +357,12 @@ body.dragging{user-select:none}
   <div class="rows" id="rows"></div>
 
   <div class="resetwrap">
+    <button class="spread" id="btnSpread" aria-label="Toggle mid-market or after-spread rates">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 17.5 10 11l4 3.6 6-7.4"/><polyline points="20 12 20 7.2 15.2 7.2"/>
+      </svg>
+      <span id="spreadLbl">Mid</span>
+    </button>
     <button class="reset" id="btnReset" aria-label="Reset all amounts to zero">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M20.5 12a8.5 8.5 0 1 1-2.49-6.01"/>
@@ -456,6 +524,12 @@ try{ expr = ls("rb_expr") || ""; }catch(e){ expr = ""; }
 var savedActive = parseInt(ls("rb_active")||"0",10);
 if(savedActive >= 0 && savedActive < list.length) active = savedActive;
 
+var spreads = {}, spreadOn = false;
+try{ spreads = JSON.parse(ls("rb_spreads")||"{}") || {}; }catch(e){ spreads = {}; }
+spreadOn = ls("rb_spread_on") === "1";
+function saveSpreads(){ ls("rb_spreads", JSON.stringify(spreads)); ls("rb_spread_on", spreadOn ? "1" : "0"); }
+function spreadOf(code){ var v = parseFloat(spreads[code]); return isFinite(v) && v > 0 ? v : 0; }
+
 var recents = [], history = [];
 try{ recents = JSON.parse(ls("rb_recent")||"[]") || []; }catch(e){ recents = []; }
 try{ history = JSON.parse(ls("rb_hist")||"[]") || []; }catch(e){ history = []; }
@@ -513,7 +587,9 @@ function evalExpr(s){
 
 function convert(v, from, to){
   if(!rates[from] || !rates[to]) return null;
-  return v / rates[from] * rates[to];
+  var out = v / rates[from] * rates[to];
+  if(spreadOn && to !== from) out = out * (1 - spreadOf(to) / 100);
+  return out;
 }
 /* Whole numbers by default. Decimals only appear when dropping them would
    destroy the value (small amounts and sub-unit rates). */
@@ -549,12 +625,14 @@ function buildRows(){
     return '<div class="row" data-i="'+i+'" style="animation-delay:'+(i*35)+'ms">'+
       '<div class="cur" data-pick="'+i+'" data-name="'+nameOf(code)+'">'+flag(code)+'<span class="cd">'+code+'</span></div>'+
       '<div class="amt" data-sel="'+i+'"><span class="sym">'+symbolOf(code)+'</span><div class="v"></div></div>'+
+      '<label class="sp"><input type="number" inputmode="decimal" step="0.1" min="0" max="30" data-sp="'+code+'" value="'+(spreads[code]||0)+'"><i>%</i></label>'+
       '<div class="grip" data-grip="'+i+'" aria-label="Drag to reorder"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="1.5"/><circle cx="15" cy="7" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="17" r="1.5"/><circle cx="15" cy="17" r="1.5"/></svg></div>'+
       '<div class="del" data-del="'+i+'">&times;</div>'+
     '</div>';
   }).join("");
   built = list.join(",");
   prev = [];
+  if(typeof scheduleFit === "function") scheduleFit();
 }
 /* group the digits of a plain typed number, leave expressions untouched */
 function typed(){
@@ -575,6 +653,19 @@ function render(){
     rows[i].classList.toggle("on", on);
     var v = rows[i].querySelector(".v");
     var shown = on ? typed() : fmt(convert(val, base, list[i]));
+
+    var cut = rows[i].querySelector(".cut");
+    var sp = (spreadOn && !on) ? spreadOf(list[i]) : 0;
+    if(sp > 0 && !cut){
+      cut = document.createElement("span");
+      cut.className = "cut";
+      rows[i].querySelector(".amt").insertBefore(cut, v);
+    }
+    if(cut){
+      if(sp > 0){ cut.textContent = "-" + sp + "%"; cut.style.display = ""; }
+      else cut.style.display = "none";
+    }
+
     if(prev[i] !== shown){
       v.textContent = shown;
       var n = shown.length;
@@ -757,6 +848,38 @@ resetBtn.addEventListener("click", function(){
   render();
 });
 
+/* Mid-market vs after-spread. Mid is the raw rate. Net subtracts the cut
+   each provider takes on that currency, so the number matches what lands. */
+var spreadBtn = document.getElementById("btnSpread"), spreadLbl = document.getElementById("spreadLbl");
+function paintSpread(){
+  spreadBtn.classList.toggle("on", spreadOn);
+  spreadLbl.textContent = spreadOn ? "Net" : "Mid";
+}
+spreadBtn.addEventListener("click", function(){
+  spreadOn = !spreadOn;
+  saveSpreads(); paintSpread(); buzz(18);
+  prev = []; render();
+  if(spreadOn){
+    var any = list.some(function(c){ return spreadOf(c) > 0; });
+    toast(any ? "Showing what you actually receive" : "No spread set yet. Tap the gear and enter your rate per currency");
+  } else {
+    toast("Showing mid-market rates");
+  }
+});
+paintSpread();
+
+rowsEl.addEventListener("input", function(e){
+  var inp = e.target.closest("[data-sp]"); if(!inp) return;
+  var c = inp.getAttribute("data-sp");
+  var v = parseFloat(inp.value);
+  if(!isFinite(v) || v < 0) v = 0;
+  if(v > 30) { v = 30; inp.value = 30; }
+  spreads[c] = v;
+  saveSpreads();
+  prev = []; render();
+});
+rowsEl.addEventListener("click", function(e){ if(e.target.closest(".sp")) e.stopPropagation(); }, true);
+
 /* ripple that follows the finger on every keypad press */
 document.querySelector(".pad").addEventListener("pointerdown", function(e){
   var b = e.target.closest("button"); if(!b) return;
@@ -772,7 +895,11 @@ document.querySelector(".pad").addEventListener("pointerdown", function(e){
 });
 
 document.getElementById("btnAdd").onclick = function(){ openPicker(null); };
-document.getElementById("btnEdit").onclick = function(){ document.body.classList.toggle("edit"); };
+document.getElementById("btnEdit").onclick = function(){
+  document.body.classList.toggle("edit");
+  buzz(10);
+  scheduleFit();
+};
 
 /* ---------- rate table ---------- */
 var rSheet = document.getElementById("ratesSheet");
@@ -809,7 +936,10 @@ document.getElementById("btnRates").onclick = function(){
          '</div></div>';
   });
   document.getElementById("rateList").innerHTML = h;
-  document.getElementById("rateNote").textContent = "Rates updated " + rateDate + ". Mid-market, refreshed once every 24 hours. Banks and remittance services apply their own spread, so the cash you receive is usually lower.";
+  document.getElementById("rateNote").textContent = "Rates updated " + rateDate + ". These are mid-market rates, refreshed once every 24 hours. " +
+    (spreadOn
+      ? "Net mode is on, so the rows above subtract the spread you entered for each currency."
+      : "Banks and remittance services take a spread on top, so the cash you receive is lower. Switch to Net to see your real amount.");
   rSheet.classList.add("on");
 };
 
@@ -1001,6 +1131,28 @@ document.getElementById("histList").addEventListener("click", function(e){
   hSheet.classList.remove("on");
   render(); buzz(12);
 });
+
+/* ---------- auto-fit: rows always divide whatever height is left ----------
+   CSS clamps get most of the way there. This closes the last few pixels at any
+   zoom level or window size, so a scrollbar only ever appears when the list is
+   genuinely longer than the screen can show at the minimum readable size. */
+function fitRows(){
+  var n = list.length; if(!n) return;
+  var cs = getComputedStyle(rowsEl);
+  var gap = parseFloat(cs.rowGap || cs.gap) || 8;
+  var padV = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+  var avail = rowsEl.clientHeight - padV;
+  if(avail <= 0) return;
+  var ideal = Math.floor((avail - (n - 1) * gap) / n);
+  var h = Math.max(26, Math.min(60, ideal));
+  document.documentElement.style.setProperty("--rowh", h + "px");
+}
+var fitT = null;
+function scheduleFit(){ clearTimeout(fitT); fitT = setTimeout(function(){ fitRows(); fitRows(); }, 30); }
+window.addEventListener("resize", scheduleFit);
+window.addEventListener("orientationchange", scheduleFit);
+if(window.visualViewport) window.visualViewport.addEventListener("resize", scheduleFit);
+scheduleFit();
 
 /* ---------- first run hint ---------- */
 if(!ls("rb_seen")){
