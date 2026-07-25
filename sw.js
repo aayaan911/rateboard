@@ -1,5 +1,5 @@
 /* RateBoard service worker: app shell offline, network-first for rates */
-var CACHE = "rateboard-v10";
+var CACHE = "rateboard-v11";
 var SHELL = ["./", "./index.html"];
 
 self.addEventListener("install", function(e){

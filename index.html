@@ -49,8 +49,9 @@ header{
 .brand h1 b{color:var(--acc);font-weight:700}
 .brand small{
   display:flex;align-items:center;gap:5px;font-size:clamp(9px,min(3vw,1.5vh),11.5px);color:#c9a24c;
-  margin-top:2px;letter-spacing:.1px;font-weight:500
+  margin-top:2px;letter-spacing:.1px;font-weight:500;min-width:0;white-space:nowrap;overflow:hidden
 }
+.brand small #status{overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
 .brand small::before{
   content:"";width:5px;height:5px;border-radius:50%;background:currentColor;
   flex:0 0 5px;box-shadow:0 0 6px currentColor;opacity:.9
@@ -59,11 +60,8 @@ header{
 .brand small.stale::before{box-shadow:none;opacity:.6}
 .brand small.err{color:#e06a6a}
 .right{display:flex;align-items:center}
-.brand h1 sub{
-  bottom:0;font-size:8px;font-weight:600;color:#6a6a6a;letter-spacing:.4px;
-  text-transform:uppercase;margin-left:6px;white-space:nowrap;vertical-align:baseline
-}
-.tools{display:flex;gap:11px;align-items:center;flex:0 0 auto}
+
+.tools{display:flex;gap:clamp(7px,2.6vw,11px);align-items:center;flex:0 0 auto}
 .tools button{background:none;border:0;color:var(--acc);line-height:0;cursor:pointer;padding:3px}
 .tools button svg{width:clamp(17px,min(5.6vw,2.8vh),22px);height:clamp(17px,min(5.6vw,2.8vh),22px);display:block}
 .tools button:active{opacity:.5}
@@ -120,9 +118,15 @@ body.edit .row .del{display:flex}
 body.edit .addbtn{display:block}
 
 .resetwrap{
-  display:flex;justify-content:center;gap:clamp(6px,2vw,10px);
-  padding:clamp(2px,.6vh,4px) 0 clamp(3px,.8vh,6px);flex:0 0 auto
+  display:flex;flex-direction:column;align-items:center;gap:clamp(4px,.9vh,8px);
+  padding:clamp(2px,.6vh,4px) var(--pad-x) clamp(3px,.8vh,6px);flex:0 0 auto
 }
+.pills{display:flex;justify-content:center;gap:clamp(6px,2vw,10px)}
+.credit-line{
+  font-size:clamp(8px,min(2.6vw,1.3vh),10px);color:#4f4f4f;letter-spacing:1px;
+  text-transform:uppercase;white-space:nowrap;line-height:1
+}
+.credit-line b{color:#7d7d7d;font-weight:700;letter-spacing:1px}
 .spread{
   display:inline-flex;align-items:center;gap:clamp(4px,1.6vw,7px);
   padding:clamp(5px,1.1vh,9px) clamp(10px,3.6vw,16px);border-radius:999px;
@@ -228,6 +232,10 @@ body.edit .row .sp{display:flex}
 .item .rt{color:#666;font-size:12px}
 .item.sel{background:#232323}
 .note{padding:0 18px 18px;color:var(--mut);font-size:12px;line-height:1.6}
+.note .credit{
+  display:block;color:#7e7e7e;font-size:11px;font-weight:700;letter-spacing:.6px;
+  text-transform:uppercase;margin-bottom:7px
+}
 
 /* ---------- motion ---------- */
 .row{animation:rise .34s cubic-bezier(.2,.8,.25,1) backwards}
@@ -332,8 +340,8 @@ body.dragging{user-select:none}
         </svg>
       </div>
       <div class="txt">
-        <h1><span>Rate</span><b>Board</b><sub>by Ayaan Shohan</sub></h1>
-        <small id="status">Loading rates...</small>
+        <h1><span>Rate</span><b>Board</b></h1>
+        <small><span id="status">Loading rates...</span></small>
       </div>
     </div>
     <div class="right">
@@ -357,6 +365,7 @@ body.dragging{user-select:none}
   <div class="rows" id="rows"></div>
 
   <div class="resetwrap">
+    <div class="pills">
     <button class="spread" id="btnSpread" aria-label="Toggle mid-market or after-spread rates">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M4 17.5 10 11l4 3.6 6-7.4"/><polyline points="20 12 20 7.2 15.2 7.2"/>
@@ -370,6 +379,8 @@ body.dragging{user-select:none}
       </svg>
       <span>Reset</span>
     </button>
+    </div>
+    <div class="credit-line">Developed by <b>Ayaan Shohan</b></div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -936,7 +947,7 @@ document.getElementById("btnRates").onclick = function(){
          '</div></div>';
   });
   document.getElementById("rateList").innerHTML = h;
-  document.getElementById("rateNote").textContent = "Rates updated " + rateDate + ". These are mid-market rates, refreshed once every 24 hours. " +
+  document.getElementById("rateNote").innerHTML = creditLine() + "Rates updated " + rateDate + ". These are mid-market rates, refreshed once every 24 hours. " +
     (spreadOn
       ? "Net mode is on, so the rows above subtract the spread you entered for each currency."
       : "Banks and remittance services take a spread on top, so the cash you receive is lower. Switch to Net to see your real amount.");
@@ -949,7 +960,10 @@ function save(){
   ls("rb_list", JSON.stringify(list));
   ls("rb_rates", JSON.stringify({rates:rates,date:rateDate}));
 }
-function setStatus(txt, cls){ statusEl.textContent = txt; statusEl.className = cls||""; }
+function setStatus(txt, cls){
+  statusEl.textContent = txt;
+  statusEl.parentNode.className = cls || "";
+}
 function tick(){ setStatus("Updated " + rateDate, live ? "" : "stale"); }
 
 /* Fiat allowlist. The bundled table is the reference set, so crypto tickers and
@@ -1094,6 +1108,7 @@ function clearRow(r){
 var hSheet = document.getElementById("histSheet");
 document.getElementById("histClose").onclick = function(){ hSheet.classList.remove("on"); };
 hSheet.addEventListener("click", function(e){ if(e.target===hSheet) hSheet.classList.remove("on"); });
+function creditLine(){ return '<b class="credit">RateBoard, developed by Ayaan Shohan</b>'; }
 function timeLabel(ts){
   var d = new Date(ts), now = new Date();
   var hh = d.getHours(), mm = ("0"+d.getMinutes()).slice(-2);
@@ -1117,7 +1132,8 @@ document.getElementById("btnHist").onclick = function(){
              '<span class="ht">'+timeLabel(e.t)+'<br>rates '+(e.d||rateDate)+'</span></div>';
     }).join("");
   }
-  document.getElementById("histNote").textContent = history.length ? "Tap any line to load that amount back in." : "";
+  document.getElementById("histNote").innerHTML = creditLine() +
+    (history.length ? "Tap any line to load that amount back in." : "Conversions are saved here when you press equals or switch base currency.");
   hSheet.classList.add("on");
 };
 document.getElementById("histList").addEventListener("click", function(e){
